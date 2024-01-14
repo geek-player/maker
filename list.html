@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		html, body {
+			width: 100%;
+			height: 100%;
+			padding: 2%;
+		}
+		/* Button */
+		button {
+		    cursor: pointer;
+		    border-radius: 6px;
+		    font-size: 16px;
+		    background-color: rgba(255, 255, 255, 1);
+		    border: 1px solid rgba(223, 223, 223, 1);
+		    padding: 12px 20px;
+		}
+
+		button:hover {
+			background-color: rgba(211, 211, 211, 1);
+			border: 1px solid rgba(223, 223, 223, 1);
+		}
+		/* Input */
+		input {
+			height: 41px;
+			font-size: 20px;
+			margin: 10px;
+			padding: 0 10px;
+		    background: none;
+		    outline: none;
+		    border: 1px solid rgba(0, 0, 0, 1.0);
+		}
+	</style>
+	<script type="text/javascript" src="https://unpkg.com/leancloud-storage@4.14.0/dist/av-min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		AV.init({
+		  appId: "rq2nkKHE1XpTtJ1WksaMDNPF-gzGzoHsz",
+		  appKey: "eiLISr69sSHXlU7VSmjq3LUY",
+		  serverURL: "https://rq2nkkhe.lc-cn-n1-shared.com"
+		});
+		function save() {
+			const TestObject = AV.Object.extend('testObject');
+			const testObject = new TestObject();
+			testObject.set('words', $('#text').val());
+			testObject.save().then((testObject) => {
+				console.log('保存成功。');
+				find();
+				},(error) => {
+				console.log('保存失败！');
+			})
+		}
+		function find() {
+			$('#data-table tbody').html('')
+			const query = new AV.Query('testObject');
+			query.find().then((tests) => {
+				tests.forEach((test) => {
+					var data = "<tr>";
+					data += "<td style='text-align: center'>" + test.get('objectId') + "</td>"
+					data += "<td style='text-align: center'>" + test.get('words') + "</td>"
+					data += "<td style='text-align: center'>" + test.get('createdAt') + "</td>"
+					data += "<td style='text-align: center'>" + test.get('updatedAt') + "</td>"
+					data += "</tr>"
+					$('#data-table tbody').html($('#data-table tbody').html()+data)
+					// console.log('words: '+test.get('words'));
+				});
+			});
+		}
+	</script>
+</head>
+<body>
+	<input id="text" type="text" name="text">
+	<button onclick="save()">保存数据</button>
+	<button onclick="find()">查询数据</button>
+	<table id="data-table" class="table table-info table-hover table-bordered">
+		<thead>
+	        <tr>
+	            <th style="text-align: center">objectId</th>
+	            <th style="text-align: center">words</th>
+	            <th style="text-align: center">createdAt</th>
+	            <th style="text-align: center">updatedAt</th>
+	        </tr>
+		</thead>
+		<tbody>
+			
+		</tbody>
+    </table>
+</body>
+</html>
